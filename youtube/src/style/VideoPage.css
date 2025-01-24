@@ -1,0 +1,24 @@
+.like-dislike i{
+    cursor: pointer;
+ }
+ .thumbs-up-clicked {
+   color: rgb(194, 25, 25); /* Change to the desired color */
+ }
+ .like-dislike{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100px;
+    height: 35px;
+    align-items: center;
+    border-radius: 30px;
+    background-color: rgba(10, 10, 10, 0.158);
+  }
+  .center-line::before {
+    content: '';
+    border-left: 1px solid black; 
+    height: 30px; 
+  }
+  
+  .like-dislike i{
+    font-size: 18px;
+  }
