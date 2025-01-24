@@ -48,12 +48,18 @@ const Home: React.FC = () => {
           pageToken: pageToken,
         },
       });
-      setVideos(response.data.items);
+      setVideos((prevVideos) => [...prevVideos, ...response.data.items]);
       setPageToken(response.data.nextPageToken);
     } catch (err) {
       console.error('Error fetching videos:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadMoreVideos = () => {
+    if (pageToken) {
+      fetchVideos(pageToken);
     }
   };
 
@@ -124,6 +130,14 @@ const Home: React.FC = () => {
             ))
           )}
         </div>
+        {pageToken && (
+          <button
+            onClick={loadMoreVideos}
+            className='mt-6 mx-auto block bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors'
+          >
+            Load More
+          </button>
+        )}
       </div>
     </div>
   );
