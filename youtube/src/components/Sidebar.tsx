@@ -9,6 +9,11 @@ import { FaCarAlt, FaMusic, FaBloggerB, FaNewspaper } from "react-icons/fa";
 import { MdSportsBaseball, MdBiotech } from "react-icons/md";
 import { PiTelevisionSimpleBold } from "react-icons/pi";
 
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
 interface Category {
   name: string;
   icon: JSX.Element;
@@ -27,7 +32,7 @@ interface Channel {
   };
 }
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [famousChannels, setFamousChannels] = useState<Channel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -84,11 +89,31 @@ const Sidebar: React.FC = () => {
   const handleCategoryClick = (categoryId: string) => {
     setActiveCategory(categoryId);
     navigate(`/category/${categoryId}`);
+    if (window.innerWidth < 1024) {
+      onClose();
+    }
   };
 
   return (
     <div className="flex h-full">
-      <div className="w-64 h-full bg-white border-r border-gray-200 flex flex-col">
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`
+          fixed lg:static inset-y-0 left-0 z-40
+          w-64 h-full bg-white border-r border-gray-200
+          transform transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:translate-x-0 flex flex-col
+        `}
+      >
         {/* Categories Section */}
         <div className="flex-none overflow-y-auto bg-white px-3 py-4">
           <div className="space-y-1">
@@ -141,7 +166,12 @@ const Sidebar: React.FC = () => {
               {famousChannels.map((channel) => (
                 <div
                   key={channel.id}
-                  onClick={() => navigate(`/channel/${channel.id}`)}
+                  onClick={() => {
+                    navigate(`/channel/${channel.id}`);
+                    if (window.innerWidth < 1024) {
+                      onClose();
+                    }
+                  }}
                   className="flex items-center px-3 py-2 rounded-lg cursor-pointer
                     transition-all duration-200 ease-in-out hover:bg-gray-50"
                 >
@@ -159,7 +189,9 @@ const Sidebar: React.FC = () => {
           )}
         </div>
       </div>
-      <div className="flex-1 overflow-hidden">
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-hidden lg:ml-64">
         <Outlet />
       </div>
     </div>
